@@ -67,7 +67,12 @@ jobs:
 
       - name: Build on Linux for linux-gnu/aarch64
         if: matrix.TARGET == 'linux-gnu/aarch64'
+        env:
+          TARGET_CC: aarch64-linux-gnu-gcc
+          TARGET_CXX: aarch64-linux-gnu-g++
+          RUSTFLAGS: -C linker=aarch64-linux-gnu-gcc
         run: |
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
           rustup target add aarch64-unknown-linux-gnu
           cargo build --target=aarch64-unknown-linux-gnu --release
           archive="bin/kaspa-miner-${{ github.event.release.tag_name }}-linux-gnu-arm64.zip"
@@ -78,6 +83,10 @@ jobs:
 
       - name: Build for Android ARM64
         if: matrix.TARGET == 'android/aarch64'
+        env:
+          TARGET_CC: aarch64-linux-android21-clang
+          TARGET_CXX: aarch64-linux-android21-clang++
+          RUSTFLAGS: -C linker=aarch64-linux-android21-clang
         run: |
           curl -sSL https://dl.google.com/android/repository/android-ndk-r27c-linux.zip -o android-ndk.zip
           unzip android-ndk.zip -d $HOME
